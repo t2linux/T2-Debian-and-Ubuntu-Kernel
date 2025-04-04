@@ -3,7 +3,7 @@
 set -eu -o pipefail
 
 KERNEL_REL=6.8.0
-UBUNTU_REL=38.38
+UBUNTU_REL=58.60
 PKGREL=1
 KERNEL_BRANCH="Ubuntu-${KERNEL_REL}-${UBUNTU_REL}"
 KERNEL_VERSION="${KERNEL_REL}-${UBUNTU_REL}-generic"
@@ -35,9 +35,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y build-essential fakeroot libncurses-dev bison flex libssl-dev libelf-dev \
   openssl dkms libudev-dev libpci-dev libiberty-dev autoconf wget xz-utils git \
-  libcap-dev bc rsync cpio dh-modaliases debhelper kernel-wedge curl gawk dwarves llvm zstd \
-  rust-1.74-all rust-1.74-src bindgen-0.65 default-jdk liblzma-dev libzstd-dev libdw-dev \
-  systemtap-sdt-dev libunwind-dev libslang2-dev libnuma-dev libbabeltrace-dev libtraceevent-dev
+  libcap-dev bc rsync cpio debhelper kernel-wedge curl gawk dwarves zstd python3
 
 ### get Kernel
 git clone --depth 1 --single-branch --branch "${KERNEL_BRANCH}" \
