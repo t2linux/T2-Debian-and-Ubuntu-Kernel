@@ -28,7 +28,6 @@ git clone --single-branch --branch ${APPLE_SMC_DRIVER_BRANCH_NAME} ${APPLE_SMC_D
 cd "${BUILD_PATH}/linux-mbp-arch" || exit
 git checkout ${APPLE_SMC_DRIVER_COMMIT_HASH}
 rm 2008*
-wget https://raw.githubusercontent.com/t2linux/linux-t2-patches/refs/heads/main/2008-i915-4-lane-quirk-for-mbp15-1.patch
 
 while IFS= read -r file; do
   echo "==> Adding ${file}"
