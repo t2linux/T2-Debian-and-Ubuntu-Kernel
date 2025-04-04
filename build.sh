@@ -79,6 +79,7 @@ do
 ./debian/scripts/misc/annotations -c CONFIG_APPLE_BCE --arch $i --flavour generic --write m
 ./debian/scripts/misc/annotations -c CONFIG_APFS_FS --arch $i --flavour generic --write m
 ./debian/scripts/misc/annotations -c CONFIG_MODULE_FORCE_UNLOAD --arch $i --flavour generic --write y
+./debian/scripts/misc/annotations -c CONFIG_HID_APPLE_MAGIC_BACKLIGHT --arch $i --flavour generic --write m
 
 done
 
