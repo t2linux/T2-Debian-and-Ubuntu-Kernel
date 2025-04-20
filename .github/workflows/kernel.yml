@@ -31,7 +31,7 @@ jobs:
 
   Create-tag:
     needs: [Lint]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: 'Checkout Repo'
         uses: actions/checkout@v4
@@ -52,122 +52,28 @@ jobs:
         with:
           tag: "v${{ steps.build.outputs.tag }}"
 
-  Build-Jammy:
-    needs: [Create-tag]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Free up disk space for the CI
-        uses: AdityaGarg8/remove-unwanted-software@v5
-        with:
-          remove-android: 'true'
-          remove-dotnet: 'true'
-          remove-haskell: 'true'
-
-      - name: 'Checkout Repo'
-        uses: actions/checkout@v4
-
-      - name: Build script
-        id: build
-        run: |
-          mkdir /tmp/artifacts
-          VERSION=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
-          REL=$(grep "PKGREL=\d*" build.sh | cut -d = -f2)
-          #REL=$( git tag |grep -F $VERSION|sort -r|head -n1|tr -d v)
-          echo Building $VERSION-$REL
-          echo "tag=${VERSION}-${REL}" >> $GITHUB_OUTPUT
-          sudo ./build.sh
-
-          cd /tmp/artifacts
-          #rm /tmp/artifacts/*dbg*
-          ls -l
-          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
-          ls -l
-
-      - name: Upload package artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-T2-${{ steps.build.outputs.tag }}-jammy
-          path: /tmp/artifacts/*
-
-      - name: Release
-        if: github.ref == 'refs/heads/Mainline-Xanmod'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            /tmp/artifacts/sha256*
-            /tmp/artifacts/*.deb
-            /tmp/artifacts/kernel_config*
-          tag_name: v${{ steps.build.outputs.tag }}
-          body_path: ${{ github.workspace }}/.github/workflows/instructions.txt
-          draft: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  Build-Noble:
-    needs: [Create-tag]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Free up disk space for the CI
-        uses: AdityaGarg8/remove-unwanted-software@v5
-        with:
-          remove-android: 'true'
-          remove-dotnet: 'true'
-          remove-haskell: 'true'
-
-      - name: 'Checkout Repo'
-        uses: actions/checkout@v4
-
-      - name: Build script
-        id: build
-        run: |
-          mkdir /tmp/artifacts
-          VERSION=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
-          REL=$(grep "PKGREL=\d*" build.sh | cut -d = -f2)
-          #REL=$( git tag |grep -F $VERSION|sort -r|head -n1|tr -d v)
-          echo Building $VERSION-$REL
-          echo "tag=${VERSION}-${REL}" >> $GITHUB_OUTPUT
-
-          DOCKER_IMAGE=ubuntu:24.04
-          docker pull ${DOCKER_IMAGE}
-          docker run \
-          -t \
-          -v "$(pwd)":/repo \
-          ${DOCKER_IMAGE} \
-          /bin/bash -c 'cd /repo && \
-          apt-get update && \
-          apt-get install -y lsb-release && \
-          mkdir /tmp/artifacts && \
-          ./build.sh && mkdir /repo/debs && \
-          cp -r /tmp/artifacts/* /repo/debs'
-          cp -r "$(pwd)"/debs/* /tmp/artifacts
-
-          cd /tmp/artifacts
-          #rm /tmp/artifacts/*dbg*
-          ls -l
-          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
-          ls -l
-
-      - name: Upload package artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-T2-${{ steps.build.outputs.tag }}-noble
-          path: /tmp/artifacts/*
-
-      - name: Release
-        if: github.ref == 'refs/heads/Mainline-Xanmod'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            /tmp/artifacts/sha256*
-            /tmp/artifacts/*.deb
-            /tmp/artifacts/kernel_config*
-          tag_name: v${{ steps.build.outputs.tag }}
-          body_path: ${{ github.workspace }}/.github/workflows/instructions.txt
-          draft: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  Build-Oracular:
+  Build:
+    strategy:
+      matrix:
+        target:
+          - image: ubuntu
+            tag: "22.04"
+            name: jammy
+          - image: ubuntu
+            tag: "24.04"
+            name: noble
+          - image: ubuntu
+            tag: "24.10"
+            name: oracular
+          - image: ubuntu
+            tag: "25.04"
+            name: plucky
+          - image: debian
+            tag: "12"
+            name: bookworm
+          - image: debian
+            tag: testing
+            name: testing
     needs: [Create-tag]
     runs-on: ubuntu-latest
     steps:
@@ -191,7 +97,7 @@ jobs:
           echo Building $VERSION-$REL
           echo "tag=${VERSION}-${REL}" >> $GITHUB_OUTPUT
 
-          DOCKER_IMAGE=ubuntu:24.10
+          DOCKER_IMAGE=${{ matrix.target.image }}:${{ matrix.target.tag }}
           docker pull ${DOCKER_IMAGE}
           docker run \
           -t \
@@ -214,135 +120,7 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
-          name: linux-T2-${{ steps.build.outputs.tag }}-oracular
-          path: /tmp/artifacts/*
-
-      - name: Release
-        if: github.ref == 'refs/heads/Mainline-Xanmod'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            /tmp/artifacts/sha256*
-            /tmp/artifacts/*.deb
-            /tmp/artifacts/kernel_config*
-          tag_name: v${{ steps.build.outputs.tag }}
-          body_path: ${{ github.workspace }}/.github/workflows/instructions.txt
-          draft: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-  Build-Bookworm:
-    needs: [Create-tag]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Free up disk space for the CI
-        uses: AdityaGarg8/remove-unwanted-software@v5
-        with:
-          remove-android: 'true'
-          remove-dotnet: 'true'
-          remove-haskell: 'true'
-
-      - name: 'Checkout Repo'
-        uses: actions/checkout@v4
-
-      - name: Build script
-        id: build
-        run: |
-          mkdir /tmp/artifacts
-          VERSION=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
-          REL=$(grep "PKGREL=\d*" build.sh | cut -d = -f2)
-          #REL=$( git tag |grep -F $VERSION|sort -r|head -n1|tr -d v)
-          echo Building $VERSION-$REL
-          echo "tag=${VERSION}-${REL}" >> $GITHUB_OUTPUT
-
-          DOCKER_IMAGE=debian:12
-          docker pull ${DOCKER_IMAGE}
-          docker run \
-          -t \
-          -v "$(pwd)":/repo \
-          ${DOCKER_IMAGE} \
-          /bin/bash -c 'cd /repo && \
-          apt-get update && \
-          apt-get install -y lsb-release && \
-          mkdir /tmp/artifacts && \
-          ./build.sh && mkdir /repo/debs && \
-          cp -r /tmp/artifacts/* /repo/debs'
-          cp -r "$(pwd)"/debs/* /tmp/artifacts
-
-          cd /tmp/artifacts
-          #rm /tmp/artifacts/*dbg*
-          ls -l
-          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
-          ls -l
-
-      - name: Upload package artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-T2-${{ steps.build.outputs.tag }}-bookworm
-          path: /tmp/artifacts/*
-
-      - name: Release
-        if: github.ref == 'refs/heads/Mainline-Xanmod'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            /tmp/artifacts/sha256*
-            /tmp/artifacts/*.deb
-            /tmp/artifacts/kernel_config*
-          tag_name: v${{ steps.build.outputs.tag }}
-          body_path: ${{ github.workspace }}/.github/workflows/instructions.txt
-          draft: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  Build-Testing:
-    needs: [Create-tag]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Free up disk space for the CI
-        uses: AdityaGarg8/remove-unwanted-software@v5
-        with:
-          remove-android: 'true'
-          remove-dotnet: 'true'
-          remove-haskell: 'true'
-
-      - name: 'Checkout Repo'
-        uses: actions/checkout@v4
-
-      - name: Build script
-        id: build
-        run: |
-          mkdir /tmp/artifacts
-          VERSION=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
-          REL=$(grep "PKGREL=\d*" build.sh | cut -d = -f2)
-          #REL=$( git tag |grep -F $VERSION|sort -r|head -n1|tr -d v)
-          echo Building $VERSION-$REL
-          echo "tag=${VERSION}-${REL}" >> $GITHUB_OUTPUT
-
-          DOCKER_IMAGE=debian:testing
-          docker pull ${DOCKER_IMAGE}
-          docker run \
-          -t \
-          -v "$(pwd)":/repo \
-          ${DOCKER_IMAGE} \
-          /bin/bash -c 'cd /repo && \
-          apt-get update && \
-          apt-get install -y lsb-release && \
-          mkdir /tmp/artifacts && \
-          ./build.sh && mkdir /repo/debs && \
-          cp -r /tmp/artifacts/* /repo/debs'
-          cp -r "$(pwd)"/debs/* /tmp/artifacts
-
-          cd /tmp/artifacts
-          #rm /tmp/artifacts/*dbg*
-          ls -l
-          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
-          ls -l
-
-      - name: Upload package artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-T2-${{ steps.build.outputs.tag }}-testing
+          name: linux-T2-${{ steps.build.outputs.tag }}-${{ matrix.target.name }}
           path: /tmp/artifacts/*
 
       - name: Release
@@ -360,8 +138,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   Publish:
-    needs: [Build-Jammy, Build-Noble, Build-Oracular, Build-Bookworm, Build-Testing]
-    runs-on: ubuntu-22.04
+    needs: [Build]
+    runs-on: ubuntu-latest
     steps:
 
       - name: 'Checkout Repo'
