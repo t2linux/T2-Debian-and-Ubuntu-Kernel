@@ -22,13 +22,11 @@ Firstly add the [t2-ubuntu-repo](https://adityagarg8.github.io/t2-ubuntu-repo/) 
 
     b) `noble` for **Ubuntu 24.04**
 
-    c) `oracular` for **Ubuntu 24.10**
+    c) `plucky` for **Ubuntu 25.04**
 
-    d) `plucky` for **Ubuntu 25.04**
+    d) `bookworm` for **Debian 12**
 
-    e) `bookworm` for **Debian 12**
-
-    f) `testing` for **Debian testing**
+    e) `testing` for **Debian testing**
 
     You can also run `lsb_release -a` to identify your codename.
 
