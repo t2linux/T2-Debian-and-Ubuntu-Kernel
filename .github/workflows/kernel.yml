@@ -60,9 +60,6 @@ jobs:
             tag: "24.04"
             name: noble
           - image: ubuntu
-            tag: "24.10"
-            name: oracular
-          - image: ubuntu
             tag: "25.04"
             name: plucky
           - image: debian
