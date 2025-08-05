@@ -96,7 +96,10 @@ jobs:
           github_token: ${{ secrets.PAT }}
           branch: LTS
   Mainline_Xanmod:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
 
       - name: 'Checkout Repo'
@@ -160,7 +163,10 @@ jobs:
           github_token: ${{ secrets.PAT }}
           branch: Mainline-Xanmod
   LTS_Xanmod:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
 
       - name: 'Checkout Repo'
