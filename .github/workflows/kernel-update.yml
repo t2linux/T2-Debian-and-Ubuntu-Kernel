@@ -144,8 +144,8 @@ jobs:
             exit 0
           else
             echo "publish=yes" >> $GITHUB_ENV
-            sed -i "s/${latestrelease}/${latestupstream}/g" ${{ github.workspace }}/build.sh
-            sed -i "s/PKGREL=.*/PKGREL=${latestpkgupstream}/g" ${{ github.workspace }}/build.sh
+            sed -i "s/${latestrelease}/${latestupstream}/g" ./build.sh
+            sed -i "s/PKGREL=.*/PKGREL=${latestpkgupstream}/g" ./build.sh
             echo "ver=${latestupstream}-${latestpkgupstream}" >> $GITHUB_ENV
           fi
       - name: Update the repo
@@ -197,8 +197,8 @@ jobs:
             exit 0
           else
             echo "publish=yes" >> $GITHUB_ENV
-            sed -i "s/${latestrelease}/${latestupstream}/g" ${{ github.workspace }}/build.sh
-            sed -i "s/PKGREL=.*/PKGREL=${latestpkgupstream}/g" ${{ github.workspace }}/build.sh
+            sed -i "s/${latestrelease}/${latestupstream}/g" ./build.sh
+            sed -i "s/PKGREL=.*/PKGREL=${latestpkgupstream}/g" ./build.sh
             echo "ver=${latestupstream}-${latestpkgupstream}" >> $GITHUB_ENV
           fi
       - name: Update the repo
