@@ -109,7 +109,7 @@ jobs:
       - name: Check for update
         id: publish
         run: |
-          brew install gnu-sed
+          #brew install gnu-sed
           latestrelease=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
           if [[ $(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Rolling Release" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 1) ]]
           then
@@ -141,8 +141,8 @@ jobs:
             exit 0
           else
             echo "publish=yes" >> $GITHUB_ENV
-            gsed -i "s/${latestrelease}/${latestupstream}/g" ${{ github.workspace }}/build.sh
-            gsed -i "s/PKGREL=.*/PKGREL=${latestpkgupstream}/g" ${{ github.workspace }}/build.sh
+            sed -i "s/${latestrelease}/${latestupstream}/g" ${{ github.workspace }}/build.sh
+            sed -i "s/PKGREL=.*/PKGREL=${latestpkgupstream}/g" ${{ github.workspace }}/build.sh
             echo "ver=${latestupstream}-${latestpkgupstream}" >> $GITHUB_ENV
           fi
       - name: Update the repo
@@ -173,7 +173,7 @@ jobs:
       - name: Check for update
         id: publish
         run: |
-          brew install gnu-sed
+          #brew install gnu-sed
           latestrelease=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
           latestupstream=$(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Long Term Support" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 1)
 
@@ -191,8 +191,8 @@ jobs:
             exit 0
           else
             echo "publish=yes" >> $GITHUB_ENV
-            gsed -i "s/${latestrelease}/${latestupstream}/g" ${{ github.workspace }}/build.sh
-            gsed -i "s/PKGREL=.*/PKGREL=${latestpkgupstream}/g" ${{ github.workspace }}/build.sh
+            sed -i "s/${latestrelease}/${latestupstream}/g" ${{ github.workspace }}/build.sh
+            sed -i "s/PKGREL=.*/PKGREL=${latestpkgupstream}/g" ${{ github.workspace }}/build.sh
             echo "ver=${latestupstream}-${latestpkgupstream}" >> $GITHUB_ENV
           fi
       - name: Update the repo
