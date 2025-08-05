@@ -96,7 +96,7 @@ jobs:
           github_token: ${{ secrets.PAT }}
           branch: LTS
   Mainline_Xanmod:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
 
       - name: 'Checkout Repo'
@@ -160,7 +160,7 @@ jobs:
           github_token: ${{ secrets.PAT }}
           branch: Mainline-Xanmod
   LTS_Xanmod:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
 
       - name: 'Checkout Repo'
