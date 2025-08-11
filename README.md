@@ -28,7 +28,9 @@ Firstly add the [t2-ubuntu-repo](https://adityagarg8.github.io/t2-ubuntu-repo/) 
 
     d) `bookworm` for **Debian 12**
 
-    e) `testing` for **Debian testing**
+    e) `trixie` for **Debian 13**
+
+    f) `testing` for **Debian testing**
 
     You can also run `lsb_release -a` to identify your codename.
 
