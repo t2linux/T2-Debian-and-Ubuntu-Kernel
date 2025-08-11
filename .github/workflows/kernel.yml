@@ -67,6 +67,9 @@ jobs:
             tag: "12"
             name: bookworm
           - image: debian
+            tag: "trixie"
+            name: trixie
+          - image: debian
             tag: testing
             name: testing
     needs: [Create-tag]
