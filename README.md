@@ -26,11 +26,13 @@ Firstly add the [t2-ubuntu-repo](https://adityagarg8.github.io/t2-ubuntu-repo/) 
 
     d) `bookworm` for **Debian 12**
 
-    e) `testing` for **Debian testing**
+    e) `trixie` for **Debian 13**
+
+    f) `testing` for **Debian testing**
 
     You can also run `lsb_release -a` to identify your codename.
 
-2. Run the following (taking `noble` as the example, just replace it with your release codename in the first line):
+3. Run the following (taking `noble` as the example, just replace it with your release codename in the first line):
 
 ```bash
 CODENAME=noble
