@@ -102,7 +102,7 @@ jobs:
           ${DOCKER_IMAGE} \
           /bin/bash -c 'cd /repo && \
           apt-get update && \
-          apt-get install -y lsb-release && \
+          apt-get install -y lsb-release base-files && \
           mkdir /tmp/artifacts && \
           ./build.sh && mkdir /repo/debs && \
           cp -r /tmp/artifacts/* /repo/debs'
