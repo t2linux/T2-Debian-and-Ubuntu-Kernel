@@ -10,7 +10,7 @@ apt-get update
 apt-get install -y lsb-release
 
 KERNEL_VERSION=6.16.4
-PKGREL=xanmod1
+PKGREL=xanmod2
 CODENAME=$(lsb_release -c | cut -d ":" -f 2 | xargs)
 
 #KERNEL_REPOSITORY=git://kernel.ubuntu.com/virgin/linux-stable.git
