@@ -62,6 +62,9 @@ jobs:
           - image: ubuntu
             tag: "25.04"
             name: plucky
+          - image: ubuntu
+            tag: "25.10"
+            name: questing
           - image: debian
             tag: "12"
             name: bookworm
