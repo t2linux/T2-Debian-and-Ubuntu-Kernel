@@ -24,6 +24,7 @@ fi
 
 #KERNEL_REPOSITORY=git://kernel.ubuntu.com/virgin/linux-stable.git
 KERNEL_REPOSITORY=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+KERNEL_REPOSITORY_ALT=https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux.git
 
 REPO_PATH=$(pwd)
 WORKING_PATH=/root/work
@@ -56,7 +57,9 @@ apt-get install -y build-essential fakeroot libncurses-dev bison flex libssl-dev
 
 ### get Kernel and Drivers
 git clone --depth 1 --single-branch --branch "v${KERNEL_VERSION}" \
-  "${KERNEL_REPOSITORY}" "${KERNEL_PATH}"
+  "${KERNEL_REPOSITORY}" "${KERNEL_PATH}" || \
+git clone --depth 1 --single-branch --branch "v${KERNEL_VERSION}" \
+  "${KERNEL_REPOSITORY_ALT}" "${KERNEL_PATH}"
 
 cd "${KERNEL_PATH}" || exit
 
