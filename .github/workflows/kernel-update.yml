@@ -23,6 +23,12 @@ jobs:
           latestrelease=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
           latestupstream=$(curl -sL https://kernel.org/ | grep "latest_button" -A 1 | awk "NR==2" | cut -d "/" -f 8 | cut -d "\"" -f 1 | cut -d "-" -f 2 | rev | cut -c 8- | rev)
 
+          if [[ ${latestupstream} = '' ]]
+          then
+            echo "Retrying fetching upstream"
+            latestupstream=$(curl -sL https://kernel.org/ | grep "latest_button" -A 1 | awk "NR==2" | cut -d "/" -f 8 | cut -d "\"" -f 1 | cut -d "-" -f 2 | rev | cut -c 8- | rev)
+          fi
+
           echo "latestupstream is ${latestupstream}"
           echo "current release is ${latestrelease}"
 
@@ -30,6 +36,10 @@ jobs:
           then
             echo "publish=no" >> $GITHUB_ENV
             exit 0
+          elif [[ ${latestupstream} = '' ]]
+          then
+            echo "Failed to get upstream ver"
+            exit 1
           else
             echo "publish=yes" >> $GITHUB_ENV
             sed -i "s/${latestrelease}/${latestupstream}/g" ${{ github.workspace }}/build.sh
@@ -67,6 +77,12 @@ jobs:
           LTS_VER=6.12
           latestrelease=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
           latestupstream=$(curl -sL https://kernel.org/ | grep -Eo "linux-${LTS_VER}(\.[0-9]+)?\.tar\.xz" | sort -V | tail -n1 | sed -E 's/linux-|\.tar\.xz//g')
+          
+          if [[ ${latestupstream} = '' ]]
+          then
+            echo "Retrying fetching upstream"
+            latestupstream=$(curl -sL https://kernel.org/ | grep -Eo "linux-${LTS_VER}(\.[0-9]+)?\.tar\.xz" | sort -V | tail -n1 | sed -E 's/linux-|\.tar\.xz//g')
+          fi
 
           echo "latestupstream is ${latestupstream}"
           echo "current release is ${latestrelease}"
@@ -75,6 +91,10 @@ jobs:
           then
             echo "publish=no" >> $GITHUB_ENV
             exit 0
+          elif [[ ${latestupstream} = '' ]]
+          then
+            echo "Failed to get upstream ver"
+            exit 1
           else
             echo "publish=yes" >> $GITHUB_ENV
             sed -i "s/${latestrelease}/${latestupstream}/g" ${{ github.workspace }}/build.sh
