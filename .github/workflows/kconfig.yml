@@ -40,6 +40,7 @@ jobs:
           docker run \
           -t \
           -v "$(pwd)":/repo \
+          -e DEBIAN_FRONTEND=noninteractive \
           ${DOCKER_IMAGE} \
           /bin/bash -c 'echo "deb http://ftp.debian.org/debian/ experimental main non-free non-free-firmware contrib" >> /etc/apt/sources.list.d/experimental.list && \
           apt-get update && \
