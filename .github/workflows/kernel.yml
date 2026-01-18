@@ -61,9 +61,6 @@ jobs:
             tag: "24.04"
             name: noble
           - image: ubuntu
-            tag: "25.04"
-            name: plucky
-          - image: ubuntu
             tag: "25.10"
             name: questing
           - image: debian
