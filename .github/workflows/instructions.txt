@@ -1,1 +1,1 @@
-Installation instructions are given [here](https://github.com/t2linux/T2-Ubuntu-Kernel#pre-installation-steps).
+Installation instructions are given [here](https://github.com/t2linux/T2-Debian-and-Ubuntu-Kernel#installation).
