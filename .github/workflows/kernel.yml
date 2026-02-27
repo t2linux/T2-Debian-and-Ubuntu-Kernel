@@ -119,7 +119,7 @@ jobs:
           ls -l
 
       - name: Upload package artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: linux-T2-${{ steps.build.outputs.tag }}-${{ matrix.target.name }}
           path: /tmp/artifacts/*
