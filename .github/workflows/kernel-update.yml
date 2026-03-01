@@ -133,24 +133,10 @@ jobs:
         run: |
           #brew install gnu-sed
           latestrelease=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
-          if [[ $(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Rolling Release" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 1) ]]
-          then
-          echo "Rolling Release"
-          latestupstream=$(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Rolling Release" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 1)
-          else
-          echo "Stable Mainline"
-          latestupstream=$(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Stable Mainline" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 1)
-          fi
+          latestupstream=$(git ls-remote --tags --refs https://gitlab.com/xanmod/linux.git | awk -F/ '{print $3}' | sort -V | grep -v -- '-rt' | tail -n1 | cut -d '-' -f 1)
 
           latestpkgrel=$(grep "PKGREL=\d*" build.sh | cut -d = -f2)
-          if [[ $(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Rolling Release" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 2) ]]
-          then
-          echo "Rolling Release"
-          latestpkgupstream=$(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Rolling Release" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 2)
-          else
-          echo "Stable Mainline"
-          latestpkgupstream=$(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Stable Mainline" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 2)
-          fi
+          latestpkgupstream=$(git ls-remote --tags --refs https://gitlab.com/xanmod/linux.git | awk -F/ '{print $3}' | sort -V | grep -v -- '-rt' | tail -n1 | cut -d '-' -f 2)
 
           echo "latestrelease: ${latestrelease}"
           echo "latestupstream: ${latestupstream}"
@@ -198,11 +184,12 @@ jobs:
         id: publish
         run: |
           #brew install gnu-sed
+          LTS_VER=6.12
           latestrelease=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
-          latestupstream=$(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Long Term Support" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 1)
+          latestupstream=$(git ls-remote --tags --refs https://gitlab.com/xanmod/linux.git | awk -F/ '{print $3}' | grep "^${LTS_VER}" | sort -V | grep -v -- '-rt' | tail -n1 | cut -d '-' -f 1)
 
           latestpkgrel=$(grep "PKGREL=\d*" build.sh | cut -d = -f2)
-          latestpkgupstream=$(curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" -sL https://xanmod.org/ | grep -A2 "Long Term Support" | grep xanmod | cut -d '=' -f 9 | cut -d '-' -f 2)
+          latestpkgupstream=$(git ls-remote --tags --refs https://gitlab.com/xanmod/linux.git | awk -F/ '{print $3}' | grep "^${LTS_VER}" | sort -V | grep -v -- '-rt' | tail -n1 | cut -d '-' -f 2)
 
           echo "latestrelease: ${latestrelease}"
           echo "latestupstream: ${latestupstream}"
