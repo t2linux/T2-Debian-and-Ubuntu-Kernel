@@ -1,0 +1,160 @@
+From c9a88b70e1157e75b7de963bf7d2144c127a5037 Mon Sep 17 00:00:00 2001
+From: deqrocks <andre@negmaster.com>
+Date: Sun, 5 Apr 2026 13:36:54 +0200
+Subject: [PATCH] thunderbolt: add device links for integrated Apple T2 NHI
+
+---
+ drivers/thunderbolt/tb.c | 115 +++++++++++++++++++++++++++------------
+ 1 file changed, 80 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
+index 4f5f1dfc0..1b4ff0d9e 100644
+--- a/drivers/thunderbolt/tb.c
++++ b/drivers/thunderbolt/tb.c
+@@ -9,6 +9,7 @@
+ #include <linux/slab.h>
+ #include <linux/errno.h>
+ #include <linux/delay.h>
++#include <linux/acpi.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_data/x86/apple.h>
+ 
+@@ -3305,21 +3306,12 @@ static const struct tb_cm_ops tb_cm_ops = {
+ static bool tb_apple_add_links(struct tb_nhi *nhi)
+ {
+ 	struct pci_dev *upstream, *pdev;
++	struct acpi_device *adev;
+ 	bool ret;
+ 
+ 	if (!x86_apple_machine)
+ 		return false;
+ 
+-	switch (nhi->pdev->device) {
+-	case PCI_DEVICE_ID_INTEL_LIGHT_RIDGE:
+-	case PCI_DEVICE_ID_INTEL_CACTUS_RIDGE_4C:
+-	case PCI_DEVICE_ID_INTEL_FALCON_RIDGE_2C_NHI:
+-	case PCI_DEVICE_ID_INTEL_FALCON_RIDGE_4C_NHI:
+-		break;
+-	default:
+-		return false;
+-	}
+-
+ 	upstream = pci_upstream_bridge(nhi->pdev);
+ 	while (upstream) {
+ 		if (!pci_is_pcie(upstream))
+@@ -3329,34 +3321,87 @@ static bool tb_apple_add_links(struct tb_nhi *nhi)
+ 		upstream = pci_upstream_bridge(upstream);
+ 	}
+ 
+-	if (!upstream)
+-		return false;
+-
+-	/*
+-	 * For each hotplug downstream port, create add device link
+-	 * back to NHI so that PCIe tunnels can be re-established after
+-	 * sleep.
+-	 */
+ 	ret = false;
+-	for_each_pci_bridge(pdev, upstream->subordinate) {
+-		const struct device_link *link;
+ 
+-		if (!pci_is_pcie(pdev))
+-			continue;
+-		if (pci_pcie_type(pdev) != PCI_EXP_TYPE_DOWNSTREAM ||
+-		    !pdev->is_pciehp)
+-			continue;
++	if (upstream) {
++		/*
++		 * Discrete Thunderbolt controller (e.g. Light Ridge, Falcon
++		 * Ridge) behind a PCIe switch. Create device links for each
++		 * hotplug-capable downstream port under that switch.
++		 */
++		for_each_pci_bridge(pdev, upstream->subordinate) {
++			const struct device_link *link;
+ 
+-		link = device_link_add(&pdev->dev, &nhi->pdev->dev,
+-				       DL_FLAG_AUTOREMOVE_SUPPLIER |
+-				       DL_FLAG_PM_RUNTIME);
+-		if (link) {
+-			dev_dbg(&nhi->pdev->dev, "created link from %s\n",
+-				dev_name(&pdev->dev));
+-			ret = true;
+-		} else {
+-			dev_warn(&nhi->pdev->dev, "device link creation from %s failed\n",
+-				 dev_name(&pdev->dev));
++			if (!pci_is_pcie(pdev))
++				continue;
++			if (pci_pcie_type(pdev) != PCI_EXP_TYPE_DOWNSTREAM ||
++			    !pdev->is_pciehp)
++				continue;
++
++			link = device_link_add(&pdev->dev, &nhi->pdev->dev,
++					       DL_FLAG_AUTOREMOVE_SUPPLIER |
++					       DL_FLAG_PM_RUNTIME);
++			if (link) {
++				dev_dbg(&nhi->pdev->dev, "created link from %s\n",
++					dev_name(&pdev->dev));
++				ret = true;
++			} else {
++				dev_warn(&nhi->pdev->dev,
++					 "device link creation from %s failed\n",
++					 dev_name(&pdev->dev));
++			}
++		}
++	} else {
++		unsigned int slot, func;
++
++		/*
++		 * Integrated Thunderbolt NHI on T2 Macs (2018-2020). The
++		 * NHI and its associated PCIe root ports all sit directly
++		 * on the root complex with no upstream port. Apple's ACPI
++		 * tables name Thunderbolt root ports as TRP0, TRP1, etc.
++		 * Find them and create device links back to the NHI so
++		 * that PCIe tunnels can be re-established after sleep.
++		 */
++		for (slot = 0; slot < 32; slot++) {
++			for (func = 0; func < 8; func++) {
++				const struct device_link *link;
++				const char *bid;
++
++				pdev = pci_get_slot(nhi->pdev->bus,
++						    PCI_DEVFN(slot, func));
++				if (!pdev)
++					continue;
++
++				if (!pci_is_pcie(pdev))
++					goto put_pdev;
++				if (pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
++					goto put_pdev;
++
++				adev = ACPI_COMPANION(&pdev->dev);
++				if (!adev)
++					goto put_pdev;
++
++				bid = acpi_device_bid(adev);
++				if (!bid || strncmp(bid, "TRP", 3) != 0)
++					goto put_pdev;
++
++				link = device_link_add(&pdev->dev, &nhi->pdev->dev,
++						       DL_FLAG_AUTOREMOVE_SUPPLIER |
++						       DL_FLAG_PM_RUNTIME);
++				if (link) {
++					dev_dbg(&nhi->pdev->dev,
++						"created link from %s\n",
++						dev_name(&pdev->dev));
++					ret = true;
++				} else {
++					dev_warn(&nhi->pdev->dev,
++						 "device link creation from %s failed\n",
++						 dev_name(&pdev->dev));
++				}
++
++put_pdev:
++				pci_dev_put(pdev);
++			}
+ 		}
+ 	}
+ 
+-- 
+2.53.0
+
