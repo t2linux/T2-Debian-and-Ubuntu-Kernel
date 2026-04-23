@@ -42,7 +42,7 @@ rm -rf "${KERNEL_PATH}"
 ### Dependencies
 apt-get install -y build-essential fakeroot libncurses-dev bison flex libssl-dev libelf-dev \
   openssl dkms libudev-dev libpci-dev libiberty-dev autoconf wget xz-utils git \
-  libcap-dev bc rsync cpio debhelper kernel-wedge curl gawk dwarves zstd python3
+  libcap-dev bc rsync cpio debhelper kernel-wedge curl gawk dwarves zstd python3 libdw-dev
 
 ### get Kernel and Drivers
 git clone --depth 1 --single-branch --branch "${KERNEL_VERSION}-${PKGREL}" \
