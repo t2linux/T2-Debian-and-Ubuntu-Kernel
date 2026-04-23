@@ -74,7 +74,7 @@ jobs:
       - name: Check for update
         id: publish
         run: |
-          LTS_VER=6.12
+          LTS_VER=6.18
           latestrelease=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
           latestupstream=$(curl -sL https://kernel.org/ | grep -Eo "linux-${LTS_VER}(\.[0-9]+)?\.tar\.xz" | sort -V | tail -n1 | sed -E 's/linux-|\.tar\.xz//g')
           
@@ -184,7 +184,7 @@ jobs:
         id: publish
         run: |
           #brew install gnu-sed
-          LTS_VER=6.12
+          LTS_VER=6.18
           latestrelease=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
           latestupstream=$(git ls-remote --tags --refs https://gitlab.com/xanmod/linux.git | awk -F/ '{print $3}' | grep "^${LTS_VER}" | sort -V | grep -v -- '-rt' | tail -n1 | cut -d '-' -f 1)
 
