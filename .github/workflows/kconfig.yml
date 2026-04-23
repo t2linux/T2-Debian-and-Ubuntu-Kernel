@@ -24,7 +24,7 @@ jobs:
           sudo sed -i "s/version=.*/version=v${newlatest}/g" /usr/local/bin/ubuntu-mainline-kernel.sh &&
           sudo ubuntu-mainline-kernel.sh -i --yes) || echo "Failed"
 
-          LTS_VER=6.12
+          LTS_VER=6.18
           latestupstream=$(curl -sL https://kernel.org/ | grep -Eo "linux-${LTS_VER}(\.[0-9]+)?\.tar\.xz" | sort -V | tail -n1 | sed -E 's/linux-|\.tar\.xz//g')
           sudo sed -i "s/version=.*/version=v${latestupstream}/g" /usr/local/bin/ubuntu-mainline-kernel.sh
           sudo ubuntu-mainline-kernel.sh -i --yes ||
