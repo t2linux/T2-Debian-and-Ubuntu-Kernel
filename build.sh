@@ -9,7 +9,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y lsb-release
 
-KERNEL_VERSION=6.18.27
+KERNEL_VERSION=6.18.28
 PKGREL=1
 DISTRO=$(lsb_release -i | cut -d ":" -f 2 | xargs)
 CODENAME=$(lsb_release -c | cut -d ":" -f 2 | xargs)
