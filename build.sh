@@ -114,6 +114,7 @@ cp -v "${WORKING_PATH}/templates/default-config-${CONFIG}" "${KERNEL_PATH}/.conf
 ./scripts/config --set-val  DEBUG_INFO_DWARF5     n
 ./scripts/config --enable CONFIG_ANDROID_BINDER_IPC
 ./scripts/config --enable CONFIG_ANDROID_BINDERFS
+./scripts/config --set-str  CONFIG_ANDROID_BINDER_DEVICES "binder,hwbinder,vndbinder"
 
 make olddefconfig
 
