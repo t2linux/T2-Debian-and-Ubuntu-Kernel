@@ -101,8 +101,6 @@ cp "${CONFIG_PATH}" "${KERNEL_PATH}/.config"
 ./scripts/config --set-val  DEBUG_INFO_NONE       y
 ./scripts/config --set-val  DEBUG_INFO_DWARF5     n
 
-make olddefconfig
-
 # Enable T2 drivers
 ./scripts/config --module CONFIG_HID_APPLETB_BL
 ./scripts/config --module CONFIG_HID_APPLETB_KBD
@@ -110,6 +108,22 @@ make olddefconfig
 ./scripts/config --module CONFIG_BT_HCIBCM4377
 ./scripts/config --module CONFIG_APFS_FS
 ./scripts/config --enable CONFIG_MODULE_FORCE_UNLOAD
+./scripts/config --module CONFIG_MFD_MACSMC
+./scripts/config --module CONFIG_MFD_MACSMC_CORE
+./scripts/config --module CONFIG_MACSMC_RTKIT
+./scripts/config --module CONFIG_MACSMC_ACPI
+./scripts/config --module CONFIG_MACSMC_LIGHT
+./scripts/config --module CONFIG_BACKLIGHT_MACSMC
+./scripts/config --module CONFIG_MACSMC_BATTERY
+./scripts/config --module CONFIG_MACSMC_ACCEL
+./scripts/config --module CONFIG_INPUT_MACSMC_CHAMSHELL
+./scripts/config --module CONFIG_SENSORS_MACSMC_HWMON
+./scripts/config --module CONFIG_RTC_DRV_MACSMC
+./scripts/config --module CONFIG_MACSMC_POWER
+./scripts/config --enable CONFIG_APPLE_BRIGHTNESS
+./scripts/config --disable CONFIG_SENSORS_APPLESMC
+
+make olddefconfig
 
 # Get rid of the dirty tag
 echo "" >"${KERNEL_PATH}"/.scmversion
