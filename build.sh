@@ -10,7 +10,7 @@ apt-get update
 apt-get install -y lsb-release
 
 KERNEL_VERSION=7.1
-PKGREL=1
+PKGREL=2
 DISTRO=$(lsb_release -i | cut -d ":" -f 2 | xargs)
 CODENAME=$(lsb_release -c | cut -d ":" -f 2 | xargs)
 
@@ -115,8 +115,6 @@ cp -v "${WORKING_PATH}/templates/default-config-${CONFIG}" "${KERNEL_PATH}/.conf
 ./scripts/config --enable   CONFIG_ANDROID_BINDERFS
 ./scripts/config --set-str  CONFIG_ANDROID_BINDER_DEVICES "binder,hwbinder,vndbinder"
 
-make olddefconfig
-
 # Enable T2 drivers
 ./scripts/config --module CONFIG_HID_APPLETB_BL
 ./scripts/config --module CONFIG_HID_APPLETB_KBD
@@ -138,6 +136,8 @@ make olddefconfig
 ./scripts/config --module CONFIG_MACSMC_POWER
 ./scripts/config --enable CONFIG_APPLE_BRIGHTNESS
 ./scripts/config --disable CONFIG_SENSORS_APPLESMC
+
+make olddefconfig
 
 # Get rid of the dirty tag
 echo "" >"${KERNEL_PATH}"/.scmversion
