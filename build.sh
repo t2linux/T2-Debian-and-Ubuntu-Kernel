@@ -103,14 +103,20 @@ sed -i 's/CONFIG_MESSAGE_LOGLEVEL_DEFAULT=.*/CONFIG_MESSAGE_LOGLEVEL_DEFAULT=4/g
 # Copy the modified config
 cp -v "${WORKING_PATH}/templates/default-config-${CONFIG}" "${KERNEL_PATH}/.config"
 
-# Disable debug info
+# Enable BTF type information for eBPF CO-RE tooling (Cilium, bpftrace, libbpf).
+# BTF is generated from DWARF by pahole (dwarves, already a build dependency),
+# so debug info must stay on; DWARF5 is the most compact. BTF additionally
+# requires that split/reduced debug info remain disabled. DWARF is not carried
+# into the shipped vmlinuz, so the installed kernel image stays lean -- only the
+# build host pays the cost.
 ./scripts/config --undefine GDB_SCRIPTS
-./scripts/config --undefine DEBUG_INFO
 ./scripts/config --undefine DEBUG_INFO_SPLIT
 ./scripts/config --undefine DEBUG_INFO_REDUCED
 ./scripts/config --undefine DEBUG_INFO_COMPRESSED
-./scripts/config --set-val  DEBUG_INFO_NONE       y
-./scripts/config --set-val  DEBUG_INFO_DWARF5     n
+./scripts/config --disable  DEBUG_INFO_NONE
+./scripts/config --enable   DEBUG_INFO_DWARF5
+./scripts/config --enable   DEBUG_INFO_BTF
+./scripts/config --enable   DEBUG_INFO_BTF_MODULES
 ./scripts/config --enable   CONFIG_ANDROID_BINDER_IPC
 ./scripts/config --enable   CONFIG_ANDROID_BINDERFS
 ./scripts/config --set-str  CONFIG_ANDROID_BINDER_DEVICES "binder,hwbinder,vndbinder"
