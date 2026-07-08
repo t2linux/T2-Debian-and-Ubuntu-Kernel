@@ -9,7 +9,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y lsb-release
 
-KERNEL_VERSION=7.1.2
+KERNEL_VERSION=7.1.3
 PKGREL=2
 DISTRO=$(lsb_release -i | cut -d ":" -f 2 | xargs)
 CODENAME=$(lsb_release -c | cut -d ":" -f 2 | xargs)
@@ -122,20 +122,20 @@ cp -v "${WORKING_PATH}/templates/default-config-${CONFIG}" "${KERNEL_PATH}/.conf
 ./scripts/config --module CONFIG_BT_HCIBCM4377
 ./scripts/config --module CONFIG_APFS_FS
 ./scripts/config --enable CONFIG_MODULE_FORCE_UNLOAD
-#./scripts/config --module CONFIG_MFD_MACSMC
-#./scripts/config --module CONFIG_MFD_MACSMC_CORE
-#./scripts/config --module CONFIG_MACSMC_RTKIT
-#./scripts/config --module CONFIG_MACSMC_ACPI
-#./scripts/config --module CONFIG_MACSMC_LIGHT
-#./scripts/config --module CONFIG_BACKLIGHT_MACSMC
-#./scripts/config --module CONFIG_MACSMC_BATTERY
-#./scripts/config --module CONFIG_MACSMC_ACCEL
-#./scripts/config --module CONFIG_INPUT_MACSMC_CHAMSHELL
-#./scripts/config --module CONFIG_SENSORS_MACSMC_HWMON
-#./scripts/config --module CONFIG_RTC_DRV_MACSMC
-#./scripts/config --module CONFIG_MACSMC_POWER
-#./scripts/config --enable CONFIG_APPLE_BRIGHTNESS
-#./scripts/config --disable CONFIG_SENSORS_APPLESMC
+./scripts/config --module CONFIG_MFD_MACSMC
+./scripts/config --module CONFIG_MFD_MACSMC_CORE
+./scripts/config --module CONFIG_MACSMC_RTKIT
+./scripts/config --module CONFIG_MACSMC_ACPI
+./scripts/config --module CONFIG_MACSMC_LIGHT
+./scripts/config --module CONFIG_BACKLIGHT_MACSMC
+./scripts/config --module CONFIG_MACSMC_BATTERY
+./scripts/config --module CONFIG_MACSMC_ACCEL
+./scripts/config --module CONFIG_INPUT_MACSMC_CHAMSHELL
+./scripts/config --module CONFIG_SENSORS_MACSMC_HWMON
+./scripts/config --module CONFIG_RTC_DRV_MACSMC
+./scripts/config --module CONFIG_MACSMC_POWER
+./scripts/config --enable CONFIG_APPLE_BRIGHTNESS
+./scripts/config --disable CONFIG_SENSORS_APPLESMC
 
 make olddefconfig
 
