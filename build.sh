@@ -126,6 +126,7 @@ cp -v "${WORKING_PATH}/templates/default-config-${CONFIG}" "${KERNEL_PATH}/.conf
 ./scripts/config --module CONFIG_MFD_MACSMC_CORE
 ./scripts/config --module CONFIG_MACSMC_RTKIT
 ./scripts/config --module CONFIG_MACSMC_ACPI
+./scripts/config --module CONFIG_MACSMC_POWER
 ./scripts/config --module CONFIG_MACSMC_LIGHT
 ./scripts/config --module CONFIG_BACKLIGHT_MACSMC
 ./scripts/config --module CONFIG_MACSMC_BATTERY
