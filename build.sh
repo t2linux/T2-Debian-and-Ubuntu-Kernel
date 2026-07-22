@@ -122,6 +122,10 @@ cp -v "${WORKING_PATH}/templates/default-config-${CONFIG}" "${KERNEL_PATH}/.conf
 ./scripts/config --module CONFIG_BT_HCIBCM4377
 ./scripts/config --module CONFIG_APFS_FS
 ./scripts/config --enable CONFIG_MODULE_FORCE_UNLOAD
+./scripts/config --module CONFIG_T2BCE_CORE
+./scripts/config --module CONFIG_T2BCE_VHCI
+./scripts/config --module CONFIG_T2BCE_AUDIO
+./scripts/config --module CONFIG_T2BCE_DMA
 #./scripts/config --module CONFIG_MFD_MACSMC
 #./scripts/config --module CONFIG_MFD_MACSMC_CORE
 #./scripts/config --module CONFIG_MACSMC_RTKIT
