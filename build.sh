@@ -110,6 +110,10 @@ make olddefconfig
 ./scripts/config --module CONFIG_BT_HCIBCM4377
 ./scripts/config --module CONFIG_APFS_FS
 ./scripts/config --enable CONFIG_MODULE_FORCE_UNLOAD
+./scripts/config --module CONFIG_T2BCE_CORE
+./scripts/config --module CONFIG_T2BCE_VHCI
+./scripts/config --module CONFIG_T2BCE_AUDIO
+./scripts/config --module CONFIG_T2BCE_DMA
 
 # Get rid of the dirty tag
 echo "" >"${KERNEL_PATH}"/.scmversion
