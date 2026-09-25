@@ -127,6 +127,7 @@ cp -v "${WORKING_PATH}/templates/default-config-${CONFIG}" "${KERNEL_PATH}/.conf
 ./scripts/config --module CONFIG_T2BCE_AUDIO
 ./scripts/config --module CONFIG_T2BCE_DMA
 ./scripts/config --module CONFIG_T2BCE_AVE
+./scripts/config --disable CONFIG_INTEL_IOMMU_DEFAULT_ON
 #./scripts/config --module CONFIG_MFD_MACSMC
 #./scripts/config --module CONFIG_MFD_MACSMC_CORE
 #./scripts/config --module CONFIG_MACSMC_RTKIT
