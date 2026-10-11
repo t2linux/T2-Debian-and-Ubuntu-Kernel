@@ -6,7 +6,7 @@ BUILD_PATH=/tmp/build-kernel
 
 # Patches
 T2_PATCHES_GIT_URL=https://github.com/t2linux/linux-t2-patches.git
-T2_PATCHES_BRANCH_NAME=main
+T2_PATCHES_BRANCH_NAME=7.3
 T2_PATCHES_COMMIT_HASH=HEAD
 
 rm -rf "${BUILD_PATH}"
@@ -18,6 +18,8 @@ git clone --single-branch --branch ${T2_PATCHES_BRANCH_NAME} ${T2_PATCHES_GIT_UR
   "${BUILD_PATH}/linux-mbp-arch"
 cd "${BUILD_PATH}/linux-mbp-arch" || exit
 git checkout ${T2_PATCHES_COMMIT_HASH}
+rm 300*
+rm 7003*
 
 while IFS= read -r file; do
   echo "==> Adding ${file}"
