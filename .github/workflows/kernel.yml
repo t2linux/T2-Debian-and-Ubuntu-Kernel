@@ -112,7 +112,7 @@ jobs:
           cp -r "$(pwd)"/debs/* /tmp/artifacts
 
           cd /tmp/artifacts
-          #rm /tmp/artifacts/*dbg*
+          rm -f /tmp/artifacts/*dbg*
           ls -l
           dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
           ls -l
