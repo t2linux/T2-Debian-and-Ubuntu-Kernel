@@ -89,6 +89,9 @@ jobs:
 
       - name: 'Checkout Repo'
         uses: actions/checkout@v7
+        with:
+          # Full history and tags for generate_release_notes.sh
+          fetch-depth: 0
 
       - name: Build script
         id: build
@@ -126,6 +129,10 @@ jobs:
           name: linux-T2-${{ steps.build.outputs.tag }}-${{ matrix.target.name }}
           path: /tmp/artifacts/*
 
+      - name: Generate release notes
+        if: github.ref == 'refs/heads/Mainline'
+        run: ./generate_release_notes.sh "v${{ steps.build.outputs.tag }}" > /tmp/release_notes.md
+
       - name: Release
         if: github.ref == 'refs/heads/Mainline'
         uses: softprops/action-gh-release@v3
@@ -135,7 +142,7 @@ jobs:
             /tmp/artifacts/*.deb
             /tmp/artifacts/kernel_config*
           tag_name: v${{ steps.build.outputs.tag }}
-          body_path: ${{ github.workspace }}/.github/workflows/instructions.txt
+          body_path: /tmp/release_notes.md
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
