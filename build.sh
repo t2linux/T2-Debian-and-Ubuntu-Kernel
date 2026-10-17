@@ -148,7 +148,19 @@ cp -v "${WORKING_PATH}/templates/default-config-${CONFIG}" "${KERNEL_PATH}/.conf
 #./scripts/config --enable CONFIG_APPLE_BRIGHTNESS
 #./scripts/config --disable CONFIG_SENSORS_APPLESMC
 
+# Activate the BPF LSM by default so runtime security tools (Tetragon,
+# KubeArmor, Tracee) work without an lsm= boot parameter. The Ubuntu template
+# builds BPF_LSM but leaves "bpf" out of the default LSM list.
+LSM_LIST=$(sed -n 's/^CONFIG_LSM="\(.*\)"$/\1/p' .config)
+if [[ ",${LSM_LIST}," != *",bpf,"* ]]
+then
+./scripts/config --set-str CONFIG_LSM "${LSM_LIST},bpf"
+fi
+
 make olddefconfig
+
+# Fail early (before the long compile) if a Kubernetes-required option got lost
+"${REPO_PATH}/check_k8s_config.sh" "${KERNEL_PATH}/.config"
 
 # Get rid of the dirty tag
 echo "" >"${KERNEL_PATH}"/.scmversion
