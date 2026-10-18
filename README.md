@@ -22,9 +22,9 @@ Firstly add the [t2-ubuntu-repo](https://adityagarg8.github.io/t2-ubuntu-repo/) 
 
     b) `noble` for **Ubuntu 24.04**
 
-    c) `questing` for **Ubuntu 25.10**
+    c) `resolute` for **Ubuntu 26.04**
     
-    d) `resolute` for **Ubuntu 26.04**
+    d) `stonking` for **Ubuntu 26.10**
 
     e) `bookworm` for **Debian 12**
 
