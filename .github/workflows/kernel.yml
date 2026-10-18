@@ -65,6 +65,9 @@ jobs:
           - image: ubuntu
             tag: "26.04"
             name: resolute
+          - image: ubuntu
+            tag: "26.10"
+            name: stonking
           - image: debian
             tag: "12"
             name: bookworm
