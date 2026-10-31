@@ -109,10 +109,9 @@ cp "${CONFIG_PATH}" "${KERNEL_PATH}/.config"
 
 make olddefconfig
 
-# Enable T2 drivers
 ./scripts/config --module CONFIG_HID_APPLETB_BL
 ./scripts/config --module CONFIG_HID_APPLETB_KBD
-./scripts/config --module CONFIG_DRM_APPLETBDR
+./scripts/config --module CONFIG_DRM_APPLETBDRM
 ./scripts/config --module CONFIG_BT_HCIBCM4377
 ./scripts/config --module CONFIG_APFS_FS
 ./scripts/config --enable CONFIG_MODULE_FORCE_UNLOAD
@@ -120,6 +119,7 @@ make olddefconfig
 ./scripts/config --module CONFIG_T2BCE_VHCI
 ./scripts/config --module CONFIG_T2BCE_AUDIO
 ./scripts/config --module CONFIG_T2BCE_DMA
+./scripts/config --module CONFIG_T2BCE_AVE
 
 # Get rid of the dirty tag
 echo "" >"${KERNEL_PATH}"/.scmversion
