@@ -16,8 +16,12 @@ cd "${BUILD_PATH}" || exit
 ### AppleSMC and BT aunali fixes
 git clone --single-branch --branch ${T2_PATCHES_BRANCH_NAME} ${T2_PATCHES_GIT_URL} \
   "${BUILD_PATH}/linux-mbp-arch"
+git clone https://github.com/kaiT2en/KaiT2en-Fedora/
 cd "${BUILD_PATH}/linux-mbp-arch" || exit
 git checkout ${T2_PATCHES_COMMIT_HASH}
+rm 9002*
+cp ../KaiT2en-Fedora/patches/runtime/wireless/*.patch ./
+rm -rf ../KaiT2en-Fedora
 
 while IFS= read -r file; do
   echo "==> Adding ${file}"
