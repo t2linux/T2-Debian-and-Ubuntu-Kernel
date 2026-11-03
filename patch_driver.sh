@@ -20,6 +20,7 @@ git clone https://github.com/kaiT2en/KaiT2en-Fedora/
 cd "${BUILD_PATH}/linux-mbp-arch" || exit
 git checkout ${T2_PATCHES_COMMIT_HASH}
 rm 9002*
+rm 9003*
 cp ../KaiT2en-Fedora/patches/runtime/wireless/*.patch ./
 rm -rf ../KaiT2en-Fedora
 
