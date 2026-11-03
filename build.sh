@@ -136,6 +136,7 @@ make olddefconfig
 ./scripts/config --module CONFIG_T2BCE_AUDIO
 ./scripts/config --module CONFIG_T2BCE_DMA
 ./scripts/config --module CONFIG_T2BCE_AVE
+./scripts/config --enable CONFIG_BRCMDBG
 
 # Get rid of the dirty tag
 echo "" >"${KERNEL_PATH}"/.scmversion
