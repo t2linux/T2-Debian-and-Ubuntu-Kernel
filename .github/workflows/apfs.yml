@@ -30,6 +30,8 @@ jobs:
           echo "currenthash=${CURRENT_HASH}" >> $GITHUB_ENV
           echo "releasever=${RELEASE_VER}" >> $GITHUB_ENV
 
+          sudo apt update
+          sudo apt install -y apt-utils
           git clone --depth 1 https://github.com/linux-apfs/linux-apfs-rw.git
           cd linux-apfs-rw
           LATEST_HASH=$(git rev-parse HEAD)
