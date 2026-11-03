@@ -143,6 +143,7 @@ cp -v "${WORKING_PATH}/templates/default-config-${CONFIG}" "${KERNEL_PATH}/.conf
 ./scripts/config --module CONFIG_LEDS_MACSMC
 ./scripts/config --module CONFIG_SENSORS_MACSMC_HWMON
 ./scripts/config --disable CONFIG_SENSORS_APPLESMC
+./scripts/config --enable CONFIG_BRCMDBG
 
 make olddefconfig
 
